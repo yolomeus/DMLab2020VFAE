@@ -1,0 +1,21 @@
+dataset:
+
+  train:
+    class: data_source.fashion_mnist.FashionMNIST
+    params:
+      img_path: data/fashion_mnist/train-images-idx3-ubyte.gz
+      label_path: data/fashion_mnist/train-labels-idx1-ubyte.gz
+
+  validation:
+    class: data_source.fashion_mnist.FashionMNIST
+    params:
+      img_path: data/fashion_mnist/t10k-images-idx3-ubyte.gz
+      label_path: data/fashion_mnist/t10k-labels-idx1-ubyte.gz
+
+  # test is the same as the validation set for demonstration purposes.
+  # Don't EVER actually do that in practice!
+  test:
+    class: data_source.fashion_mnist.FashionMNIST
+    params:
+      img_path: data/fashion_mnist/t10k-images-idx3-ubyte.gz
+      label_path: data/fashion_mnist/t10k-labels-idx1-ubyte.gz

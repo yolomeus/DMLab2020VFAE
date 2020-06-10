@@ -1,0 +1,13 @@
+name: pytorch
+channels:
+  - defaults
+  - pytorch
+dependencies:
+  - python=3.7
+  - pip=20.0.2
+  - pytorch=1.5
+  - torchvision=0.6.0
+  - scikit-learn=0.22.1
+  - pip:
+      - pytorch-lightning==0.7.6
+      - hydra-core==0.11.3
