@@ -1,0 +1,6 @@
+download: true
+target_basedir: data/processed
+download_basedir: data/download
+prepares:
+  - name: adult
+    class: data_prepare.adult.AdultPrepare
