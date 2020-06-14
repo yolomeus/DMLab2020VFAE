@@ -18,7 +18,7 @@ def get_data(cfg: DictConfig):
         target_dir = os.path.join(target_basedir, cls.name)
         prepare = instantiate(cls, download_dir=dl_dir, target_dir=target_dir)
         if cfg.download:
-            prepare.dowload()
+            prepare.download()
         prepare.prepare()
 
 
