@@ -1,5 +1,5 @@
 defaults:
-  - model: mlp
+  - model: logistic_regression
   - dataset: adult
 
 gpus: 0

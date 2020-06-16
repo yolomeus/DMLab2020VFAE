@@ -1,0 +1,5 @@
+model:
+  class: model.logistic_regression.LogisticRegression
+  params:
+    in_features: 118
+    out_features: 1
