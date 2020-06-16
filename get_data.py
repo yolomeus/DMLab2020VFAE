@@ -3,12 +3,15 @@ import os
 import hydra
 from hydra.utils import instantiate, get_original_cwd
 from omegaconf import DictConfig
+from pytorch_lightning import seed_everything
 
 
 @hydra.main(config_path='conf/data_prepare.yaml')
 def get_data(cfg: DictConfig):
     """Download and preprocess all datasets that are specified in the data_prepare config file.
     """
+    seed_everything(cfg.random_seed)
+
     cwd = get_original_cwd()
     download_basedir = os.path.join(cwd, cfg.download_basedir)
     target_basedir = os.path.join(cwd, cfg.target_basedir)
