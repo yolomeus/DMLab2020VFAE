@@ -26,10 +26,5 @@ optimizer:
 metrics:
   - accuracy:
     class: metrics.Accuracy
-    params:
-      binary: true
-
   - f1:
     class: metrics.F1Score
-    params:
-      binary: true

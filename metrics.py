@@ -24,11 +24,8 @@ class SklearnMetric(Metric, ABC):
     base class that pre-processes inputs to make them compatible with sklearn metrics.
     """
 
-    def __init__(self, binary=False):
-        self.binary = binary
-
     def __call__(self, y_pred: Tensor, y_true: Tensor):
-        if self.binary:
+        if y_pred.shape[-1] == 1:
             y_pred = torch.round(torch.sigmoid(y_pred))
         else:
             y_pred = torch.softmax(y_pred, dim=-1).argmax(dim=-1)
@@ -49,12 +46,11 @@ class Precision(SklearnMetric):
         Compute precision using scikit-learn's `precision_score`.
     """
 
-    def __init__(self, binary=False, average='macro'):
+    def __init__(self, average='macro'):
         """
         :param average: check https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_score.html for
         details.
         """
-        super().__init__(binary)
         self.average = average
 
     def _compute(self, y_pred: Tensor, y_true: Tensor):
@@ -66,13 +62,12 @@ class Recall(SklearnMetric):
         Compute recall using scikit-learn's `recall_score`.
     """
 
-    def __init__(self, binary=False, average='macro'):
+    def __init__(self, average='macro'):
         """
         :param average: check
         https://scikit-learn.org/stable/modules/generated/sklearn.metrics.recall_score.html#sklearn.metrics.recall_score
         for details.
         """
-        super().__init__(binary)
         self.average = average
 
     def _compute(self, y_pred: Tensor, y_true: Tensor):
@@ -84,13 +79,12 @@ class F1Score(SklearnMetric):
         Compute the f1 score using scikit-learn's `f1_score`.
     """
 
-    def __init__(self, binary=False, average='macro'):
+    def __init__(self, average='macro'):
         """
         :param average: check
         https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html#sklearn.metrics.f1_score
         for details.
         """
-        super().__init__(binary)
         self.average = average
 
     def _compute(self, y_pred: Tensor, y_true: Tensor):
