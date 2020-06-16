@@ -1,0 +1,19 @@
+dataset:
+
+  train:
+    class: data_source.adult.Adult
+    params:
+      data_path: data/processed/adult/split_0/adult_train.pkl
+      predict_s: false
+
+  validation:
+    class: data_source.adult.Adult
+    params:
+      data_path: data/processed/adult/split_0/adult_validation.pkl
+      predict_s: false
+
+  test:
+    class: data_source.adult.Adult
+    params:
+      data_path: data/processed/adult/adult_test.pkl
+      predict_s: false
