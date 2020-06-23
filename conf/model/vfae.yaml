@@ -1,0 +1,11 @@
+model:
+  class: model.vfae.VariationalFairAutoEncoder
+  params:
+    x_dim: 117
+    s_dim: 1
+    y_dim: 1
+    z1_enc_dim: 100
+    z2_enc_dim: 100
+    z1_dec_dim: 100
+    x_dec_dim: 100
+    z_dim: 50
