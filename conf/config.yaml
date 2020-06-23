@@ -1,14 +1,14 @@
 defaults:
-  - model: logistic_regression
-  - dataset: adult
+  - model: vfae
+  - dataset: adult_vfae
 
-gpus: 0
-num_workers: 4
-random_seed: 1590258941
+gpus: 1
+num_workers: 2
+random_seed: 1592334224
 
 training:
-  epochs: 10
-  batch_size: 32
+  epochs: 100
+  batch_size: 100
 
 testing:
   checkpoint: 'outputs/2020-06-10/18-52-06/lightning_logs/version_0/checkpoints/epoch=2.ckpt'
@@ -16,7 +16,7 @@ testing:
   epochs: 1
 
 loss:
-  class: torch.nn.BCEWithLogitsLoss
+  class: custom_losses.VFAELoss
 
 optimizer:
   class: torch.optim.Adam
@@ -24,7 +24,5 @@ optimizer:
     lr: 1e-3
 
 metrics:
-  - accuracy:
-    class: metrics.Accuracy
-  - f1:
-    class: metrics.F1Score
+  - loss:
+    class: custom_losses.VFAELoss
