@@ -87,16 +87,16 @@ class LightningModel(LightningModule):
         return train_dl
 
     def val_dataloader(self):
-        train_ds = instantiate(self.dataset_conf.validation)
-        val_dl = DataLoader(train_ds,
+        val_ds = instantiate(self.dataset_conf.validation)
+        val_dl = DataLoader(val_ds,
                             self.test_conf.batch_size,
                             num_workers=self.hparams['num_workers'])
         return val_dl
 
     def test_dataloader(self):
         test_conf = self.test_conf
-        train_ds = instantiate(self.dataset_conf.test)
-        test_dl = DataLoader(train_ds,
+        test_ds = instantiate(self.dataset_conf.test)
+        test_dl = DataLoader(test_ds,
                              test_conf.batch_size,
                              num_workers=self.hparams['num_workers'])
         return test_dl
@@ -114,10 +114,11 @@ class LightningModel(LightningModule):
         """
 
         outs_at_key = list(map(lambda x: x[key], outputs))
-        # we assume a list of outputs if the elements aren't tensors
-        if not isinstance(outs_at_key[0], torch.Tensor):
-            per_out_batches = list(zip(*outs_at_key))
-            total_outs = list(map(lambda x: torch.cat(x), per_out_batches))
+        # we assume a dict of outputs if the elements aren't tensors
+        if isinstance(outs_at_key[0], dict):
+            total_outs = {key: torch.cat([outs[key] for outs in outs_at_key])
+                          for key in outs_at_key[0].keys()}
+
             return total_outs
 
         return torch.cat(outs_at_key)
