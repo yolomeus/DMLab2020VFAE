@@ -1,0 +1,16 @@
+dataset:
+
+  train:
+    class: data_source.adult.AdultVFAE
+    params:
+      data_path: data/processed/adult/split_0/adult_train.pkl
+
+  validation:
+    class: data_source.adult.AdultVFAE
+    params:
+      data_path: data/processed/adult/split_0/adult_validation.pkl
+
+  test:
+    class: data_source.adult.AdultVFAE
+    params:
+      data_path: data/processed/adult/adult_test.pkl

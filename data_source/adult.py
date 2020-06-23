@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import torch
 from hydra.utils import to_absolute_path
@@ -28,6 +29,27 @@ class Adult(Dataset):
             x = item.drop(index=['age_>=65', 'label']).to_numpy().astype('float32')
 
         return x, y
+
+    def __len__(self):
+        return len(self.ds)
+
+
+class AdultVFAE(Dataset):
+    """Adult dataset returning inputs and targets for training the VFAE model."""
+
+    def __init__(self, data_path):
+        data_path = to_absolute_path(data_path)
+        self.ds = pd.read_pickle(data_path)
+
+    def __getitem__(self, index):
+        item = self.ds.iloc[index]
+        s = torch.as_tensor(item['age_>=65'], dtype=torch.float32).unsqueeze(-1)
+        y = torch.as_tensor(item['label'], dtype=torch.float32).unsqueeze(-1)
+        x = item.drop(index=['age_>=65', 'label']).to_numpy().astype('float32')
+
+        input_dict = {'x': x, 's': s, 'y': y}
+        target_dict = {'x': x, 's': s, 'y': y.squeeze().long()}
+        return input_dict, target_dict
 
     def __len__(self):
         return len(self.ds)
