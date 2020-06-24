@@ -36,6 +36,7 @@ class VariationalFairAutoEncoder(Module):
         :return: dict containing all 8 VFAE outputs that are needed for computing the loss term, i.e. :
             - x_decoded: the reconstructed input with shape(x_decoded) = shape(concat(x, s))
             - y_decoded: the predictive posterior output for target label y
+            - z1_encoded: the sample from latent variable z1
             - z1_enc_logvar: variance of the z1 encoder distribution
             - z1_enc_mu: mean of the z1 encoder distribution
             - z2_enc_logvar: variance of the z2 encoder distribution
@@ -64,6 +65,7 @@ class VariationalFairAutoEncoder(Module):
             # predictive outputs
             'x_decoded': x_decoded,
             'y_decoded': y_decoded,
+            'z1_encoded': z1_encoded,
 
             # outputs for regularization loss terms
             'z1_enc_logvar': z1_enc_logvar,
