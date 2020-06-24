@@ -16,7 +16,7 @@ testing:
   epochs: 1
 
 loss:
-  class: custom_losses.VFAELoss
+  class: losses.VFAELoss
 
 optimizer:
   class: torch.optim.Adam
@@ -25,4 +25,4 @@ optimizer:
 
 metrics:
   - loss:
-    class: custom_losses.VFAELoss
+    class: losses.VFAELoss
