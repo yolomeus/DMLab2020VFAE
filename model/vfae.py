@@ -37,23 +37,23 @@ class VariationalFairAutoEncoder(Module):
             - x_decoded: the reconstructed input with shape(x_decoded) = shape(concat(x, s))
             - y_decoded: the predictive posterior output for target label y
             - z1_enc_logvar: variance of the z1 encoder distribution
-            - z1_enc_std: std of the z1 encoder distribution
+            - z1_enc_mu: mean of the z1 encoder distribution
             - z2_enc_logvar: variance of the z2 encoder distribution
-            - z2_enc_std: std of the z2 encoder distribution
+            - z2_enc_mu: mean of the z2 encoder distribution
             - z1_dec_logvar: variance of the z1 decoder distribution
-            - z1_dec_std: std of the z1 decoder distribution
+            - z1_dec_mu: mean of the z1 decoder distribution
         """
         x, s, y = inputs['x'], inputs['s'], inputs['y']
         # encode
         x_s = torch.cat([x, s], dim=1)
-        z1_encoded, z1_enc_logvar, z1_enc_std = self.encoder_z1(x_s)
+        z1_encoded, z1_enc_logvar, z1_enc_mu = self.encoder_z1(x_s)
 
         z1_y = torch.cat([z1_encoded, y], dim=1)
-        z2_encoded, z2_enc_logvar, z2_enc_std = self.encoder_z2(z1_y)
+        z2_encoded, z2_enc_logvar, z2_enc_mu = self.encoder_z2(z1_y)
 
         # decode
         z2_y = torch.cat([z2_encoded, y], dim=1)
-        z1_decoded, z1_dec_logvar, z1_dec_std = self.decoder_z1(z2_y)
+        z1_decoded, z1_dec_logvar, z1_dec_mu = self.decoder_z1(z2_y)
 
         z1_s = torch.cat([z1_decoded, s], dim=1)
         x_decoded = self.decoder_x(z1_s)
@@ -67,13 +67,13 @@ class VariationalFairAutoEncoder(Module):
 
             # outputs for regularization loss terms
             'z1_enc_logvar': z1_enc_logvar,
-            'z1_enc_std': z1_enc_std,
+            'z1_enc_mu': z1_enc_mu,
 
             'z2_enc_logvar': z2_enc_logvar,
-            'z2_enc_std': z2_enc_std,
+            'z2_enc_mu': z2_enc_mu,
 
             'z1_dec_logvar': z1_dec_logvar,
-            'z1_dec_std': z1_dec_std
+            'z1_dec_mu': z1_dec_mu
         }
 
         return outputs
@@ -90,7 +90,7 @@ class VariationalMLP(Module):
         self.activation = activation
 
         self.logvar_encoder = Linear(hidden_dim, z_dim)
-        self.std_encoder = Linear(hidden_dim, z_dim)
+        self.mu_encoder = Linear(hidden_dim, z_dim)
 
     def forward(self, inputs):
         """
@@ -99,16 +99,16 @@ class VariationalMLP(Module):
         :return:
             - z - the latent sample
             - logvar - variance of the distribution over z
-            - std - std of the distribution over z
+            - mu - mean of the distribution over z
         """
         x = self.encoder(inputs)
         logvar = (0.5 * self.logvar_encoder(x)).exp()
-        std = self.std_encoder(x)
+        mu = self.mu_encoder(x)
 
         # reparameterization trick: we draw a random z
-        epsilon = torch.randn_like(std)
-        z = epsilon * std + logvar
-        return z, logvar, std
+        epsilon = torch.randn_like(mu)
+        z = epsilon * mu + logvar
+        return z, logvar, mu
 
 
 class DecoderMLP(Module):
