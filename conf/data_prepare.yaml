@@ -1,3 +1,4 @@
+random_seed: 12345
 download: true
 target_basedir: data/processed
 download_basedir: data/download
