@@ -1,13 +1,15 @@
 name: pytorch
 channels:
-  - defaults
   - pytorch
+  - defaults
 dependencies:
   - python=3.7
   - pip=20.0.2
   - pytorch=1.5
   - torchvision=0.6.0
+  - cudatoolkit=10.2
   - scikit-learn=0.22.1
+  - pandas=1.0.5
   - pip:
       - pytorch-lightning==0.7.6
       - hydra-core==0.11.3
