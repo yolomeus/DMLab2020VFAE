@@ -19,6 +19,25 @@ class Metric(ABC):
         return self._compute(y_pred, y_true)
 
 
+class VFAEMetric(Metric):
+    """Wrapper around metrics that extracts the right outputs of the VFAE depending on the metric."""
+
+    def __init__(self, metric_name):
+        """
+        :param metric_name (str): name of the metric to use. Currently supported: 'accuracy'
+        """
+        if metric_name == 'accuracy':
+            self.metric = Accuracy()
+        else:
+            raise NotImplementedError(f'the metric: {metric_name} is not implemented.')
+        self.__class__.__name__ = self.metric.__class__.__name__.lower()
+
+    def _compute(self, y_pred: Tensor, y_true: Tensor):
+        y_pred = y_pred['y_decoded']
+        y_true = y_true['y']
+        return self.metric(y_pred, y_true)
+
+
 class SklearnMetric(Metric, ABC):
     """
     base class that pre-processes inputs to make them compatible with sklearn metrics.
