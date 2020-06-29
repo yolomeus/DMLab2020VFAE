@@ -29,7 +29,7 @@ class SklearnMetric(Metric, ABC):
             y_pred = torch.round(torch.sigmoid(y_pred))
         else:
             y_pred = torch.softmax(y_pred, dim=-1).argmax(dim=-1)
-        return self._compute(y_pred, y_true)
+        return self._compute(y_pred.cpu(), y_true.cpu())
 
 
 class Accuracy(SklearnMetric):
@@ -38,7 +38,7 @@ class Accuracy(SklearnMetric):
     """
 
     def _compute(self, y_pred: Tensor, y_true: Tensor):
-        return accuracy_score(y_true.cpu(), y_pred.cpu())
+        return accuracy_score(y_true, y_pred)
 
 
 class Precision(SklearnMetric):
@@ -54,7 +54,7 @@ class Precision(SklearnMetric):
         self.average = average
 
     def _compute(self, y_pred: Tensor, y_true: Tensor):
-        return precision_score(y_true.cpu(), y_pred.cpu(), average=self.average)
+        return precision_score(y_true, y_pred, average=self.average)
 
 
 class Recall(SklearnMetric):
@@ -71,7 +71,7 @@ class Recall(SklearnMetric):
         self.average = average
 
     def _compute(self, y_pred: Tensor, y_true: Tensor):
-        return recall_score(y_true.cpu(), y_pred.cpu(), average=self.average)
+        return recall_score(y_true, y_pred, average=self.average)
 
 
 class F1Score(SklearnMetric):
@@ -88,4 +88,4 @@ class F1Score(SklearnMetric):
         self.average = average
 
     def _compute(self, y_pred: Tensor, y_true: Tensor):
-        return f1_score(y_true.cpu(), y_pred.cpu(), average=self.average)
+        return f1_score(y_true, y_pred, average=self.average)
