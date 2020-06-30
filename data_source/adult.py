@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 import torch
 from hydra.utils import to_absolute_path
@@ -21,6 +20,7 @@ class Adult(Dataset):
 
     def __getitem__(self, index):
         item = self.ds.iloc[index]
+        s = torch.as_tensor(item['age_>=65'], dtype=torch.float32).unsqueeze(-1)
         if not self.predict_s:
             y = torch.as_tensor(item['label'], dtype=torch.float32).unsqueeze(-1)
             x = item.drop('label').to_numpy().astype('float32')
@@ -28,7 +28,7 @@ class Adult(Dataset):
             y = torch.as_tensor(item['age_>=65'], dtype=torch.float32).unsqueeze(-1)
             x = item.drop(index=['age_>=65', 'label']).to_numpy().astype('float32')
 
-        return x, y
+        return x, {'y_true': y, 'is_protected': s}
 
     def __len__(self):
         return len(self.ds)

@@ -48,7 +48,7 @@ class SklearnMetric(Metric, ABC):
             y_pred = torch.round(torch.sigmoid(y_pred))
         else:
             y_pred = torch.softmax(y_pred, dim=-1).argmax(dim=-1)
-        return self._compute(y_pred.cpu(), y_true.cpu())
+        return self._compute(y_pred.cpu(), y_true['y_true'].cpu())
 
 
 class Accuracy(SklearnMetric):
