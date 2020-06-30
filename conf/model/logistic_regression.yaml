@@ -3,3 +3,17 @@ model:
   params:
     in_features: 118
     out_features: 1
+
+loss:
+  class: torch.nn.BCEWithLogitsLoss
+
+optimizer:
+  class: torch.optim.Adam
+  params:
+    lr: 1e-3
+
+metrics:
+  - accuracy:
+    class: metrics.Accuracy
+  - f1:
+    class: metrics.F1Score

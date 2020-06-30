@@ -9,3 +9,15 @@ model:
     z1_dec_dim: 100
     x_dec_dim: 100
     z_dim: 50
+
+loss:
+  class: losses.VFAELoss
+
+optimizer:
+  class: torch.optim.Adam
+  params:
+    lr: 1e-3
+
+metrics:
+  - loss:
+    class: losses.VFAELoss
