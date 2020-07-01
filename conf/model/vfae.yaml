@@ -1,4 +1,5 @@
 model:
+  name: VariationalFairAutoEncoder
   class: model.vfae.VariationalFairAutoEncoder
   params:
     x_dim: 117
@@ -19,5 +20,7 @@ optimizer:
     lr: 1e-3
 
 metrics:
-  - loss:
-    class: losses.VFAELoss
+  - accuracy:
+    class: metrics.VFAEMetric
+    params:
+      metric_name: accuracy
