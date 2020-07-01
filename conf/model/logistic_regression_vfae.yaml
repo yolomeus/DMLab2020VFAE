@@ -1,0 +1,19 @@
+model:
+  name: LogisticRegressionVFAE
+  class: model.logistic_regression.LogisticRegressionVFAE
+  params:
+    vfae_ckpt: 'multirun/Adult/VariationalFairAutoEncoder/2020-07-02/01-32-39/2/lightning_logs/version_0/checkpoints/epoch=9.ckpt'
+    z_dim: 50
+    out_features: 1
+
+loss:
+  class: torch.nn.BCEWithLogitsLoss
+
+optimizer:
+  class: torch.optim.Adam
+  params:
+    lr: 1e-3
+
+metrics:
+  - accuracy:
+    class: metrics.Accuracy

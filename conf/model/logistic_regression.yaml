@@ -1,7 +1,8 @@
 model:
+  name: LogisticRegression
   class: model.logistic_regression.LogisticRegression
   params:
-    in_features: 118
+    in_features: 117
     out_features: 1
 
 loss:
