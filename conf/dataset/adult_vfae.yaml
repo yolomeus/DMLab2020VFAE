@@ -1,16 +1,22 @@
 dataset:
+  name: Adult
+  predict_s: false
+  split_nr: 0
 
   train:
     class: data_source.adult.AdultVFAE
     params:
-      data_path: data/processed/adult/split_0/adult_train.pkl
+      data_path: data/processed/adult/split_${dataset.split_nr}/adult_train.pkl
+      predict_s: ${dataset.predict_s}
 
   validation:
     class: data_source.adult.AdultVFAE
     params:
-      data_path: data/processed/adult/split_0/adult_validation.pkl
+      data_path: data/processed/adult/split_${dataset.split_nr}/adult_validation.pkl
+      predict_s: ${dataset.predict_s}
 
   test:
     class: data_source.adult.AdultVFAE
     params:
       data_path: data/processed/adult/adult_test.pkl
+      predict_s: ${dataset.predict_s}

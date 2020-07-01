@@ -15,18 +15,19 @@ class Adult(Dataset):
         :param predict_s: predict the sensitive variable from the data instead of the labels.
         """
         data_path = to_absolute_path(data_path)
-        self.ds = pd.read_pickle(data_path)
+        self.ds = pd.read_pickle(data_path).drop(columns='sex_ Male')
         self.predict_s = predict_s
+        self.protected_var = 'sex_ Female'
 
     def __getitem__(self, index):
         item = self.ds.iloc[index]
-        s = torch.as_tensor(item['age_>=65'], dtype=torch.float32).unsqueeze(-1)
+        s = torch.as_tensor(item[self.protected_var], dtype=torch.float32).unsqueeze(-1)
         if not self.predict_s:
             y = torch.as_tensor(item['label'], dtype=torch.float32).unsqueeze(-1)
             x = item.drop('label').to_numpy().astype('float32')
         else:
-            y = torch.as_tensor(item['age_>=65'], dtype=torch.float32).unsqueeze(-1)
-            x = item.drop(index=['age_>=65', 'label']).to_numpy().astype('float32')
+            y = s
+            x = item.drop(index=[self.protected_var, 'label']).to_numpy().astype('float32')
 
         return x, {'y_true': y, 'is_protected': s}
 
@@ -37,18 +38,20 @@ class Adult(Dataset):
 class AdultVFAE(Dataset):
     """Adult dataset returning inputs and targets for training the VFAE model."""
 
-    def __init__(self, data_path):
+    def __init__(self, data_path, predict_s):
         data_path = to_absolute_path(data_path)
         self.ds = pd.read_pickle(data_path)
+        self.predict_s = predict_s
+        self.protected_var = 'sex_ Female'
 
     def __getitem__(self, index):
         item = self.ds.iloc[index]
-        s = torch.as_tensor(item['age_>=65'], dtype=torch.float32).unsqueeze(-1)
+        s = torch.as_tensor(item[self.protected_var], dtype=torch.float32).unsqueeze(-1)
         y = torch.as_tensor(item['label'], dtype=torch.float32).unsqueeze(-1)
-        x = item.drop(index=['age_>=65', 'label']).to_numpy().astype('float32')
+        x = item.drop(index=[self.protected_var, 'label']).to_numpy().astype('float32')
 
         input_dict = {'x': x, 's': s, 'y': y}
-        target_dict = {'x': x, 's': s, 'y': y.squeeze().long()}
+        target_dict = {'x': x, 's': s, 'y': y.squeeze().long()} if not self.predict_s else {'y_true': s}
         return input_dict, target_dict
 
     def __len__(self):
