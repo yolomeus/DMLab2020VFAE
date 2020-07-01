@@ -2,15 +2,26 @@ defaults:
   - model: logistic_regression
   - dataset: adult
 
-gpus: 0
+gpus: 1
 num_workers: 4
 random_seed: 1590258941
 
 training:
   epochs: 10
-  batch_size: 32
+  batch_size: 100
+  # checkpointing
+  save_ckpts: 5
+  monitor: val_loss
+  mode: min
 
 testing:
-  checkpoint: 'outputs/2020-06-10/18-52-06/lightning_logs/version_0/checkpoints/epoch=2.ckpt'
+  checkpoint: 'multirun/Adult/LogisticRegression/2020-07-01/23-42-19/0/lightning_logs/version_0/checkpoints/epoch=49.ckpt'
   batch_size: 512
   epochs: 1
+
+# set logging paths
+hydra:
+  run:
+    dir: outputs/${dataset.name}/${model.name}/${now:%Y-%m-%d}/${now:%H-%M-%S}/
+  sweep:
+    dir: multirun/${dataset.name}/${model.name}/${now:%Y-%m-%d}/${now:%H-%M-%S}/
