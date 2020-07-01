@@ -39,9 +39,8 @@ class LightningModel(LightningModule):
         x, y_true = batch
         y_pred = self.model(x)
 
-        labels = y_true.get('y_true', None)
-        labels = y_true if labels is None else labels
-        loss = self.loss(y_pred, labels)
+        y_true = y_true if 'y_true' not in y_true else y_true['y_true']
+        loss = self.loss(y_pred, y_true)
 
         logs = {'batch_loss': loss}
         return {'loss': loss, 'log': logs, 'y_pred': y_pred, 'y_true': y_true}
@@ -74,9 +73,10 @@ class LightningModel(LightningModule):
 
         logs = {f'{prefix}_' + self._classname(metric): metric(y_pred, y_true) for metric in self.metrics}
 
-        labels = y_true.get('y_true', None)
-        labels = y_true if labels is None else labels
-        loss = self.loss(y_pred, labels)
+        if isinstance(y_true, dict):
+            y_true = y_true if 'y_true' not in y_true else y_true['y_true']
+
+        loss = self.loss(y_pred, y_true)
         # when testing we want to log a scalar and not a tensor
         if prefix == 'test':
             loss = loss.item()
