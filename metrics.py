@@ -22,6 +22,53 @@ class Metric(ABC):
         return self._compute(y_pred, y_true)
 
 
+class Discrimination(Metric):
+    """
+    Discrimination Metric.
+    """
+
+    def __init__(self, use_probabilities=False):
+        """
+
+        :param use_probabilities: whether to use the probabilities categorical predictions.
+        """
+        super().__init__()
+        if use_probabilities:
+            self.__name__ += '_probs'
+        self.use_probabilities = use_probabilities
+
+    def _compute(self, y_pred: Tensor, y_true: dict):
+        """
+
+        :param y_pred: predictions
+        :param y_true: dict containing entries y_true (ground truth labels) and is_protected (1 if protected 0 else)
+        :return: the discrimination score
+        """
+        assert isinstance(y_true, dict)
+        y_true, s = y_true['y_true'], y_true['is_protected']
+        y_pred = torch.sigmoid(y_pred)
+        if not self.use_probabilities:
+            y_pred = torch.round(y_pred)
+
+        # separate outputs for protected and not protected
+        idx_protected = (s == 1).nonzero()[:, 0]
+        idx_non_protected = (s == 0).nonzero()[:, 0]
+
+        y_protected = y_pred[idx_protected]
+        y_non_protected = y_pred[idx_non_protected]
+
+        # compute the score
+        n_protected = len(idx_protected)
+        n_non_protected = len(idx_non_protected)
+
+        protected_score = y_protected.sum() / n_protected
+        non_protected_score = y_non_protected.sum() / n_non_protected
+
+        disc = torch.abs(protected_score - non_protected_score)
+
+        return disc.item()
+
+
 class VFAEMetric(Metric):
     """Wrapper around metrics that extracts the right outputs of the VFAE depending on the metric."""
 
