@@ -24,7 +24,13 @@ metrics:
     class: metrics.VFAEMetric
     params:
       metric_name: accuracy
+
   - discrimination:
     class: metrics.VFAEMetric
     params:
       metric_name: discrimination
+
+  - discrimination_prob:
+    class: metrics.VFAEMetric
+    params:
+      metric_name: discrimination_prob

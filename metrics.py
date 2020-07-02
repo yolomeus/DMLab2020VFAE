@@ -34,7 +34,7 @@ class Discrimination(Metric):
         """
         super().__init__()
         if use_probabilities:
-            self.__name__ += '_probs'
+            self.__name__ += '_prob'
         self.use_probabilities = use_probabilities
 
     def _compute(self, y_pred: Tensor, y_true: dict):
@@ -81,6 +81,8 @@ class VFAEMetric(Metric):
             self.metric = Accuracy()
         elif metric_name == 'discrimination':
             self.metric = Discrimination()
+        elif metric_name == 'discrimination_prob':
+            self.metric = Discrimination(True)
         else:
             raise NotImplementedError(f'the metric: {metric_name} is not implemented.')
 
@@ -89,7 +91,7 @@ class VFAEMetric(Metric):
 
     def _compute(self, y_pred: dict, y_true: dict):
         y_pred = y_pred['y_decoded']
-        if not self.metric_name == 'discrimination':
+        if self.metric_name not in ['discrimination', 'discrimination_prob']:
             y_true = y_true['y']
         else:
             y_true = {'is_protected': y_true['s'], 'y_true': y_true['y']}
