@@ -2,7 +2,7 @@ model:
   name: LogisticRegression
   class: model.logistic_regression.LogisticRegression
   params:
-    in_features: 117
+    in_features: 116
     out_features: 1
 
 loss:
@@ -16,5 +16,9 @@ optimizer:
 metrics:
   - accuracy:
     class: metrics.Accuracy
-  - f1:
-    class: metrics.F1Score
+  - discrimination:
+    class: metrics.Discrimination
+    params:
+      use_probabilities: True
+  - discrimination:
+    class: metrics.Discrimination

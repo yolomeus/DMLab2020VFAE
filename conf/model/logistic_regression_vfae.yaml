@@ -17,3 +17,11 @@ optimizer:
 metrics:
   - accuracy:
     class: metrics.Accuracy
+
+  - discrimination:
+    class: metrics.Discrimination
+
+  - discrimination:
+    class: metrics.Discrimination
+    params:
+      use_probabilities: True
