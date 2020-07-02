@@ -39,8 +39,8 @@ class LightningModel(LightningModule):
         x, y_true = batch
         y_pred = self.model(x)
 
-        y_true = y_true if 'y_true' not in y_true else y_true['y_true']
-        loss = self.loss(y_pred, y_true)
+        loss_y_true = y_true if 'y_true' not in y_true else y_true['y_true']
+        loss = self.loss(y_pred, loss_y_true)
 
         logs = {'batch_loss': loss}
         return {'loss': loss, 'log': logs, 'y_pred': y_pred, 'y_true': y_true}
