@@ -112,7 +112,7 @@ class SklearnMetric(Metric, ABC):
         if isinstance(y_true, dict):
             y_true = y_true['y_true']
 
-        return self._compute(y_pred.cpu(), y_true.cpu())
+        return torch.as_tensor(self._compute(y_pred.cpu(), y_true.cpu()))
 
 
 class Accuracy(SklearnMetric):
