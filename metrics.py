@@ -6,6 +6,9 @@ from torch import Tensor
 
 
 class Metric(ABC):
+    def __init__(self):
+        self.__name__ = self.__class__.__name__
+
     @abstractmethod
     def _compute(self, y_pred: Tensor, y_true: Tensor):
         """Compute the metric given predictions and labels.
@@ -32,7 +35,10 @@ class VFAEMetric(Metric):
             raise NotImplementedError(f'the metric: {metric_name} is not implemented.')
         self.__class__.__name__ = self.metric.__class__.__name__.lower()
 
-    def _compute(self, y_pred: Tensor, y_true: Tensor):
+        self.__name__ = metric_name
+        self.metric_name = metric_name
+
+    def _compute(self, y_pred: dict, y_true: dict):
         y_pred = y_pred['y_decoded']
         y_true = y_true['y']
         return self.metric(y_pred, y_true)
@@ -74,6 +80,7 @@ class Precision(SklearnMetric):
         :param average: check https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_score.html for
         details.
         """
+        super().__init__()
         self.average = average
 
     def _compute(self, y_pred: Tensor, y_true: Tensor):
@@ -91,6 +98,7 @@ class Recall(SklearnMetric):
         https://scikit-learn.org/stable/modules/generated/sklearn.metrics.recall_score.html#sklearn.metrics.recall_score
         for details.
         """
+        super().__init__()
         self.average = average
 
     def _compute(self, y_pred: Tensor, y_true: Tensor):
@@ -108,6 +116,7 @@ class F1Score(SklearnMetric):
         https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html#sklearn.metrics.f1_score
         for details.
         """
+        super().__init__()
         self.average = average
 
     def _compute(self, y_pred: Tensor, y_true: Tensor):

@@ -137,5 +137,5 @@ class LightningModel(LightningModule):
         :param lower: return the name in lowercase.
         :return: the classname as string.
         """
-        name = obj.__class__.__name__
+        name = obj.__name__
         return name.lower() if lower else name
