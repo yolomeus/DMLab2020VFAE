@@ -38,10 +38,11 @@ class Adult(Dataset):
 class AdultVFAE(Dataset):
     """Adult dataset returning inputs and targets for training the VFAE model."""
 
-    def __init__(self, data_path, predict_s):
+    def __init__(self, data_path, predict_s, predict_y):
         data_path = to_absolute_path(data_path)
         self.ds = pd.read_pickle(data_path)
         self.predict_s = predict_s
+        self.predict_y = predict_y
         self.protected_var = 'sex_ Female'
 
     def __getitem__(self, index):
@@ -51,7 +52,12 @@ class AdultVFAE(Dataset):
         x = item.drop(index=[self.protected_var, 'label']).to_numpy().astype('float32')
 
         input_dict = {'x': x, 's': s, 'y': y}
-        target_dict = {'x': x, 's': s, 'y': y.squeeze().long()} if not self.predict_s else {'y_true': s}
+        if self.predict_s:
+            target_dict = {'y_true': s}
+        elif self.predict_y:
+            target_dict = {'y_true': y, 'is_protected': s}
+        else:
+            target_dict = {'x': x, 's': s, 'y': y.squeeze().long()}
         return input_dict, target_dict
 
     def __len__(self):
