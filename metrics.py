@@ -64,7 +64,7 @@ class Discrimination(Metric):
         protected_score = y_protected.sum() / n_protected
         non_protected_score = y_non_protected.sum() / n_non_protected
 
-        disc = torch.abs(protected_score - non_protected_score)
+        disc = torch.abs(non_protected_score - protected_score)
 
         return disc.item()
 
@@ -76,18 +76,23 @@ class VFAEMetric(Metric):
         """
         :param metric_name (str): name of the metric to use. Currently supported: 'accuracy'
         """
+        super().__init__()
         if metric_name == 'accuracy':
             self.metric = Accuracy()
+        elif metric_name == 'discrimination':
+            self.metric = Discrimination()
         else:
             raise NotImplementedError(f'the metric: {metric_name} is not implemented.')
-        self.__class__.__name__ = self.metric.__class__.__name__.lower()
 
         self.__name__ = metric_name
         self.metric_name = metric_name
 
     def _compute(self, y_pred: dict, y_true: dict):
         y_pred = y_pred['y_decoded']
-        y_true = y_true['y']
+        if not self.metric_name == 'discrimination':
+            y_true = y_true['y']
+        else:
+            y_true = {'is_protected': y_true['s'], 'y_true': y_true['y']}
         return self.metric(y_pred, y_true)
 
 
@@ -96,7 +101,7 @@ class SklearnMetric(Metric, ABC):
     base class that pre-processes inputs to make them compatible with sklearn metrics.
     """
 
-    def __call__(self, y_pred: Tensor, y_true: Tensor):
+    def __call__(self, y_pred, y_true):
         if y_pred.shape[-1] == 1:
             y_pred = torch.round(torch.sigmoid(y_pred))
         else:
