@@ -9,7 +9,7 @@ class VFAELoss(Module):
     Loss function for training the Variational Fair Auto Encoder.
     """
 
-    def __init__(self, alpha=1.0, beta=100, mmd_dim=500, mmd_gamma=1.0):
+    def __init__(self, alpha=1.0, beta=100.0, mmd_dim=500, mmd_gamma=1.0):
         super().__init__()
         self.alpha = alpha
         self.beta = beta
@@ -49,7 +49,7 @@ class VFAELoss(Module):
         z1_enc = y_pred['z1_encoded']
         z1_protected, z1_non_protected = self._separate_protected(z1_enc, s)
         if len(z1_protected) > 0 and len(z1_non_protected) > 0:
-            loss += self.mmd(z1_protected, z1_non_protected)
+            loss += self.beta * self.mmd(z1_protected, z1_non_protected)
 
         return loss
 
