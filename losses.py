@@ -9,7 +9,7 @@ class VFAELoss(Module):
     Loss function for training the Variational Fair Auto Encoder.
     """
 
-    def __init__(self, alpha=1.0, beta=100.0, mmd_dim=500, mmd_gamma=1.0):
+    def __init__(self, alpha=1.0, beta=1.0, mmd_dim=500, mmd_gamma=1.0):
         super().__init__()
         self.alpha = alpha
         self.beta = beta
@@ -48,7 +48,7 @@ class VFAELoss(Module):
         # compute mmd only if protected and non protected in batch
         z1_enc = y_pred['z1_encoded']
         z1_protected, z1_non_protected = self._separate_protected(z1_enc, s)
-        if len(z1_protected) > 0 and len(z1_non_protected) > 0:
+        if len(z1_protected) > 0:
             loss += self.beta * self.mmd(z1_protected, z1_non_protected)
 
         return loss
@@ -97,8 +97,7 @@ class FastMMD(Module):
         self.out_features = out_features
 
     def forward(self, a, b):
-        mmd = self._phi(a).mean(dim=0) - self._phi(b).mean(dim=0)
-        mmd = mmd.square().sum()
+        mmd = torch.norm(self._phi(a).mean(dim=0) - self._phi(b).mean(dim=0), 2)
         return mmd
 
     def _phi(self, x):

@@ -7,12 +7,12 @@ num_workers: 4
 random_seed: 1590258941
 
 training:
-  epochs: 10
+  epochs: 100
   batch_size: 100
   # checkpointing
   save_ckpts: 5
-  monitor: val_loss
-  mode: min
+  monitor: val_accuracy
+  mode: max
 
 testing:
   checkpoint: 'multirun/Adult/LogisticRegression/2020-07-01/23-42-19/0/lightning_logs/version_0/checkpoints/epoch=49.ckpt'
