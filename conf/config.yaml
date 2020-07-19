@@ -4,10 +4,10 @@ defaults:
 
 gpus: 1
 num_workers: 4
-random_seed: 696665347866991
+random_seed: 29384753
 
 training:
-  epochs: 100
+  epochs: 50
   batch_size: 100
   # checkpointing
   save_ckpts: 5
@@ -15,7 +15,7 @@ training:
   mode: min
 
 testing:
-  checkpoint: 'multirun/Adult/LogisticRegression/2020-07-01/23-42-19/0/lightning_logs/version_0/checkpoints/epoch=49.ckpt'
+  checkpoint:
   batch_size: 512
   epochs: 1
 
