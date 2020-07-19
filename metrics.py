@@ -66,7 +66,7 @@ class Discrimination(Metric):
 
         disc = torch.abs(non_protected_score - protected_score)
 
-        return disc.item()
+        return disc
 
 
 class VFAEMetric(Metric):
