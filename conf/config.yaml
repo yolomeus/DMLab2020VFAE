@@ -1,18 +1,18 @@
 defaults:
-  - model: logistic_regression
-  - dataset: adult
+  - model: vfae
+  - dataset: adult_vfae
 
 gpus: 1
 num_workers: 4
-random_seed: 1590258941
+random_seed: 696665347866991
 
 training:
   epochs: 100
   batch_size: 100
   # checkpointing
   save_ckpts: 5
-  monitor: val_accuracy
-  mode: max
+  monitor: val_discrimination
+  mode: min
 
 testing:
   checkpoint: 'multirun/Adult/LogisticRegression/2020-07-01/23-42-19/0/lightning_logs/version_0/checkpoints/epoch=49.ckpt'
