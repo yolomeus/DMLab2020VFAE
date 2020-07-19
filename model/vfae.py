@@ -1,5 +1,5 @@
 import torch
-from torch.nn import Module, Linear, ReLU
+from torch.nn import Module, Linear, ReLU, Dropout
 
 
 class VariationalFairAutoEncoder(Module):
@@ -16,6 +16,7 @@ class VariationalFairAutoEncoder(Module):
                  z1_dec_dim,
                  x_dec_dim,
                  z_dim,
+                 dropout_rate,
                  activation=ReLU()):
         super().__init__()
         y_out_dim = 2 if y_dim == 1 else y_dim
@@ -26,6 +27,8 @@ class VariationalFairAutoEncoder(Module):
         self.decoder_z1 = VariationalMLP(z_dim + y_dim, z1_dec_dim, z_dim, activation)
         self.decoder_y = DecoderMLP(z_dim, x_dec_dim, y_out_dim, activation)
         self.decoder_x = DecoderMLP(z_dim + s_dim, x_dec_dim, x_dim + s_dim, activation)
+
+        self.dropout = Dropout(dropout_rate)
 
     def forward(self, inputs):
         """
@@ -47,6 +50,7 @@ class VariationalFairAutoEncoder(Module):
         x, s, y = inputs['x'], inputs['s'], inputs['y']
         # encode
         x_s = torch.cat([x, s], dim=1)
+        x_s = self.dropout(x_s)
         z1_encoded, z1_enc_logvar, z1_enc_mu = self.encoder_z1(x_s)
 
         z1_y = torch.cat([z1_encoded, y], dim=1)

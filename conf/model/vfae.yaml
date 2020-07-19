@@ -10,9 +10,12 @@ model:
     z1_dec_dim: 100
     x_dec_dim: 100
     z_dim: 50
+    dropout_rate: 0.0
 
 loss:
   class: losses.VFAELoss
+  params:
+    beta: 0.0
 
 optimizer:
   class: torch.optim.Adam
