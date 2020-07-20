@@ -9,3 +9,7 @@ so called **sensible** or **protected** feature **s** that indicates membership 
 This could for example be gender, religion or age.  
 The VFAE tries to produce latent representations of the inputs that no longer contain sensible information about **s**
 while staying useful for downstream tasks like classification.
+
+#
+
+We experimented with 

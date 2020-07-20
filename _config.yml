@@ -1,2 +1,5 @@
 theme: jekyll-theme-cayman
 title: "Data Mining Lab 2020: The Variational Fair Autoencoder Project"
+show_downloads: "true"
+urls:
+  paper: "https://arxiv.org/pdf/1511.00830.pdf"
