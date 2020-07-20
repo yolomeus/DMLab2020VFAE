@@ -12,4 +12,5 @@ while staying useful for downstream tasks like classification.
 
 #
 
-We experimented with 
+In our experiments we find that adding dropout at each neural networks input layer and removing the MMD Penalty entirely
+lowers discrimination while maintaining accuracy on downstream tasks.
