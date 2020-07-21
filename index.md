@@ -10,7 +10,5 @@ This could for example be gender, religion or age.
 The VFAE tries to produce latent representations of the inputs that no longer contain sensible information about **s**
 while staying useful for downstream tasks like classification.
 
-#
-
-In our experiments we find that adding dropout at each neural networks input layer and removing the MMD Penalty entirely
-lowers discrimination while maintaining accuracy on downstream tasks.
+In our experiments we find that adding dropout at each neural network's input layer and removing the MMD Penalty entirely,
+does lower discrimination while maintaining accuracy on downstream prediction.
