@@ -97,17 +97,21 @@ class FastMMD(Module):
         self.out_features = out_features
 
     def forward(self, a, b):
-        mmd = torch.norm(self._phi(a).mean(dim=0) - self._phi(b).mean(dim=0), 2)
+        in_features = a.shape[-1]
+
+        # W sampled from normal
+        w_rand = torch.randn((in_features, self.out_features), device=a.device)
+        # b sampled from uniform
+        b_rand = torch.zeros((self.out_features,), device=a.device).uniform_(0, 2 * pi)
+
+        phi_a = self._phi(a, w_rand, b_rand).mean(dim=0)
+        phi_b = self._phi(b, w_rand, b_rand).mean(dim=0)
+        mmd = torch.norm(phi_a - phi_b, 2)
+
         return mmd
 
-    def _phi(self, x):
-        in_features = x.shape[-1]
-        # W sampled from normal
-        w_rand = torch.randn((in_features, self.out_features), device=x.device)
-        # b sampled from uniform
-        b_rand = torch.zeros((self.out_features,), device=x.device).uniform_(0, 2 * pi)
-
+    def _phi(self, x, w, b):
         scale_a = sqrt(2 / self.out_features)
         scale_b = sqrt(2 / self.gamma)
-        out = scale_a * (scale_b * (x @ w_rand + b_rand)).cos()
+        out = scale_a * (scale_b * (x @ w + b)).cos()
         return out
